@@ -1,0 +1,19 @@
+Compilation needs PCL 1.7 or higher.
+Multiple usage scenarios. Original from PCL library, modified and dev by Aayush.
+
+*****CURRENTLY ONLY SHOWS CLOUD WITHIN 0.8m RADIUS OF 83rd KEYFRAME LOCATION. THIS IS FOR DEBUGGING.*****
+
+Usage:
+./cloudVisualizer -h 
+[Shows help option]
+
+./cloudVisualizer -r MapPoints_0.pcd KeyFrames_0.pcd
+[Shows Keyframe and Mappoints close to the keyframe locations] / [Using this for ground to camera height calculation]
+
+./cloudVisualizer -n MapPoints_0.pcd KeyFrames_0.pcd
+[Shows normals to the MapPoints]
+
+./cloudVisualizer -v MapPoints_0.pcd KeyFrames_0.pcd
+[Shows normals to the MapPoints in radius of 0.1 and 0.01]
+
+STILL UNDER DEV, BUT FEEL FREE TO USE FOR DEBUG. PLEASE MESSAGE AAYUSH IF ANY ISSUES OCCUR
