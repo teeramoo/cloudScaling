@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/teeramoo/Desktop/ORB-slam-script/Point_cloud_segmentation/cloudVisualizer/cloudScaling.cpp
+/home/teeramoo/Desktop/Thesis_work/Point_cloud_segmentation/cloudVisualizer/cloudScaling.cpp
 iostream
 -
 boost/thread/thread.hpp

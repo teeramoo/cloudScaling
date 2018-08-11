@@ -7,13 +7,4 @@ Usage:
 ./cloudVisualizer -h 
 [Shows help option]
 
-./cloudVisualizer -r MapPoints_0.pcd KeyFrames_0.pcd
-[Shows Keyframe and Mappoints close to the keyframe locations] / [Using this for ground to camera height calculation]
-
-./cloudVisualizer -n MapPoints_0.pcd KeyFrames_0.pcd
-[Shows normals to the MapPoints]
-
-./cloudVisualizer -v MapPoints_0.pcd KeyFrames_0.pcd
-[Shows normals to the MapPoints in radius of 0.1 and 0.01]
-
-STILL UNDER DEV, BUT FEEL FREE TO USE FOR DEBUG. PLEASE MESSAGE AAYUSH IF ANY ISSUES OCCUR
+./cloud_visualizer -r <path_to_pointclouds_with_keyframes> <path_to_keyframes> <height_of_the_platform> <search_radius>

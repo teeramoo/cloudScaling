@@ -1,24 +1,24 @@
 Determining if the pthread_create exist failed with the following output:
-Change Dir: /home/teeramoo/Desktop/ORB-slam-script/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp
+Change Dir: /home/teeramoo/Desktop/Thesis_work/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_45141/fast"
-/usr/bin/make -f CMakeFiles/cmTC_45141.dir/build.make CMakeFiles/cmTC_45141.dir/build
-make[1]: Entering directory '/home/teeramoo/Desktop/ORB-slam-script/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_45141.dir/CheckSymbolExists.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_45141.dir/CheckSymbolExists.c.o   -c /home/teeramoo/Desktop/ORB-slam-script/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
-Linking C executable cmTC_45141
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_45141.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_45141.dir/CheckSymbolExists.c.o  -o cmTC_45141 -rdynamic 
-CMakeFiles/cmTC_45141.dir/CheckSymbolExists.c.o: In function `main':
+Run Build Command:"/usr/bin/make" "cmTC_38514/fast"
+/usr/bin/make -f CMakeFiles/cmTC_38514.dir/build.make CMakeFiles/cmTC_38514.dir/build
+make[1]: Entering directory '/home/teeramoo/Desktop/Thesis_work/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_38514.dir/CheckSymbolExists.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_38514.dir/CheckSymbolExists.c.o   -c /home/teeramoo/Desktop/Thesis_work/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_38514
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_38514.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_38514.dir/CheckSymbolExists.c.o  -o cmTC_38514 -rdynamic 
+CMakeFiles/cmTC_38514.dir/CheckSymbolExists.c.o: In function `main':
 CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_45141.dir/build.make:97: recipe for target 'cmTC_45141' failed
-make[1]: *** [cmTC_45141] Error 1
-make[1]: Leaving directory '/home/teeramoo/Desktop/ORB-slam-script/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp'
-Makefile:126: recipe for target 'cmTC_45141/fast' failed
-make: *** [cmTC_45141/fast] Error 2
+CMakeFiles/cmTC_38514.dir/build.make:97: recipe for target 'cmTC_38514' failed
+make[1]: *** [cmTC_38514] Error 1
+make[1]: Leaving directory '/home/teeramoo/Desktop/Thesis_work/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_38514/fast' failed
+make: *** [cmTC_38514/fast] Error 2
 
-File /home/teeramoo/Desktop/ORB-slam-script/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+File /home/teeramoo/Desktop/Thesis_work/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
 #include <pthread.h>
 
@@ -34,22 +34,22 @@ int main(int argc, char** argv)
 }
 
 Determining if the function pthread_create exists in the pthreads failed with the following output:
-Change Dir: /home/teeramoo/Desktop/ORB-slam-script/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp
+Change Dir: /home/teeramoo/Desktop/Thesis_work/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_50c07/fast"
-/usr/bin/make -f CMakeFiles/cmTC_50c07.dir/build.make CMakeFiles/cmTC_50c07.dir/build
-make[1]: Entering directory '/home/teeramoo/Desktop/ORB-slam-script/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_50c07.dir/CheckFunctionExists.c.o
-/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_50c07.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.5/Modules/CheckFunctionExists.c
-Linking C executable cmTC_50c07
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_50c07.dir/link.txt --verbose=1
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_50c07.dir/CheckFunctionExists.c.o  -o cmTC_50c07 -rdynamic -lpthreads 
+Run Build Command:"/usr/bin/make" "cmTC_5b782/fast"
+/usr/bin/make -f CMakeFiles/cmTC_5b782.dir/build.make CMakeFiles/cmTC_5b782.dir/build
+make[1]: Entering directory '/home/teeramoo/Desktop/Thesis_work/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5b782.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_5b782.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.5/Modules/CheckFunctionExists.c
+Linking C executable cmTC_5b782
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5b782.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_5b782.dir/CheckFunctionExists.c.o  -o cmTC_5b782 -rdynamic -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_50c07.dir/build.make:97: recipe for target 'cmTC_50c07' failed
-make[1]: *** [cmTC_50c07] Error 1
-make[1]: Leaving directory '/home/teeramoo/Desktop/ORB-slam-script/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp'
-Makefile:126: recipe for target 'cmTC_50c07/fast' failed
-make: *** [cmTC_50c07/fast] Error 2
+CMakeFiles/cmTC_5b782.dir/build.make:97: recipe for target 'cmTC_5b782' failed
+make[1]: *** [cmTC_5b782] Error 1
+make[1]: Leaving directory '/home/teeramoo/Desktop/Thesis_work/Point_cloud_segmentation/cloudVisualizer/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_5b782/fast' failed
+make: *** [cmTC_5b782/fast] Error 2
 
 

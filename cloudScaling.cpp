@@ -305,27 +305,34 @@ main (int argc, char** argv) {
 
     double heightPlatform = 0.00;
     double searchRadius = 0.00;
-
+    double realDistance = 0.0;
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_p5(new pcl::PointCloud<pcl::PointXYZRGB>);
 
 
     pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
     pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
 
-    if(argc != 6)
+    if(argc != 8)
     {
-        cout << " usage : ./cloud_visualizer -r <path_to_pointclouds_with_keyframes> <path_to_keyframes> <height_of_the_platform> <search_radius>" << endl;
+        cout << " usage :"<<  argv[0]   << " -r <path_to_pointclouds_with_keyframes> <path_to_point_cloud_upward> <path_to_keyframes> <height_of_the_platform> <search_radius> <real distance travelled>" << endl;
         return  -1;
     }
 
         sInput = std::string(argv[2]);
-        sInputKeyframe = std::string(argv[3]);
-        heightPlatform = std::stod(std::string(argv[4]));
-        searchRadius = std::stod(std::string(argv[5]));
+        sInputKeyframe = std::string(argv[4]);
+        heightPlatform = std::stod(std::string(argv[5]));
+        searchRadius = std::stod(std::string(argv[6]));
+        realDistance = std::stod(std::string(argv[7]));
+
+
+        std::string sInputUpward = std::string(argv[3]);
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_upward_ptr(new pcl::PointCloud<pcl::PointXYZRGB>);
 
 
         pcl::io::loadPCDFile(sInput, *cloud);
         pcl::io::loadPCDFile(sInputKeyframe, *keypoint_ptr);
+        pcl::io::loadPCDFile(sInputUpward, *cloud_upward_ptr);
+
 
         int keypointSize = keypoint_ptr->points.size();
         cout << "keypointSize : " << keypointSize << endl;
@@ -345,7 +352,7 @@ main (int argc, char** argv) {
         // Mandatory
         seg.setModelType (pcl::SACMODEL_PLANE);
         seg.setMethodType (pcl::SAC_RANSAC);
-        seg.setDistanceThreshold (0.01);
+        seg.setDistanceThreshold (0.1);
 
         seg.setInputCloud (cloud);
         seg.segment (*inliers, *coefficients);
@@ -441,22 +448,43 @@ main (int argc, char** argv) {
     double C = coefficients->values[2];
     double D = coefficients->values[3];
 
+    int numSample = 0;
     for(int i =0; i < keypoint_ptr->points.size(); i++)
     {
         cumDistance += fabs(A*keypoint_ptr->points[i].x + B*keypoint_ptr->points[i].y + C*keypoint_ptr->points[i].z +D) / sqrt(pow(A,2) + pow(B,2) + pow(C,2));
+        numSample +=1;
     }
 
-    double dScale = heightPlatform/ (cumDistance/keypoint_ptr->points.size());
-
+//    double dScale = heightPlatform/ (cumDistance/keypoint_ptr->points.size());
+    double dScale = heightPlatform/ (cumDistance/numSample);
     cout << "Total cumDistance : " << cumDistance << endl;
-    cout << "Average cumDistance : " << cumDistance/keypoint_ptr->points.size() << endl;
+//    cout << "Average cumDistance : " << cumDistance/keypoint_ptr->points.size() << endl;
+    cout << "Average cumDistance : " << cumDistance/numSample << endl;
     cout << "Scale : " << dScale << endl;
     cout << "Scaling map..." << endl;
+
+    double avgX = (keypoint_ptr->points[1].x + keypoint_ptr->points[keypoint_ptr->points.size()-1].x) /2.0;
+    double avgY = (keypoint_ptr->points[1].y + keypoint_ptr->points[keypoint_ptr->points.size()-1].y)/2.0;
+    double avgZ = (keypoint_ptr->points[1].z + keypoint_ptr->points[keypoint_ptr->points.size()-1].z)/2.0;
+
+    double alternativeScale = fabs(A*avgX + B*avgY + C*avgZ +D) / sqrt(pow(A,2) + pow(B,2) + pow(C,2));
+    cout << "Alternative scale is : " << heightPlatform/alternativeScale << endl;
+
+    double distanceFirst = fabs(A*keypoint_ptr->points[1].x + B*keypoint_ptr->points[1].y + C*keypoint_ptr->points[1].z +D)
+            / sqrt(pow(A,2) + pow(B,2) + pow(C,2));
+    double distanceLast = fabs(A*keypoint_ptr->points[keypoint_ptr->points.size()-1].x + B*keypoint_ptr->points[keypoint_ptr->points.size()-1].y
+            + C*keypoint_ptr->points[keypoint_ptr->points.size()-1].z +D) / sqrt(pow(A,2) + pow(B,2) + pow(C,2));
+
+    cout << "distFirst : " << distanceFirst << endl;
+    cout << "distLast : " << distanceLast << endl;
 
 
         // Scale the whole map based on height of cam
         pcl::PointCloud<pcl::PointXYZRGB>::Ptr scaled_cloud_ptr(new pcl::PointCloud<pcl::PointXYZRGB>);
         pcl::PointCloud<pcl::PointXYZRGB>::Ptr scaled_keypoint_ptr(new pcl::PointCloud<pcl::PointXYZRGB>);
+
+        pcl::PointCloud<pcl::PointXYZRGB>::Ptr scaled_cloud_upward_ptr(new pcl::PointCloud<pcl::PointXYZRGB>);
+
 
         for (size_t j = 0; j < cloud->points.size(); j++)
         {
@@ -475,6 +503,18 @@ main (int argc, char** argv) {
             scaled_cloud_ptr->points.push_back(tpoint);
         }
 
+
+        for (size_t j = 0; j < cloud_upward_ptr->points.size(); j++)
+        {
+            pcl::PointXYZRGB tpoint = cloud_upward_ptr->points[j];
+            tpoint.x *= dScale;
+            tpoint.y *= dScale;
+            tpoint.z *= dScale;
+
+            scaled_cloud_upward_ptr->points.push_back(tpoint);
+        }
+
+        // Calculate distance travelled in the map
         double dTravelledDistScaled = 0;
         for (size_t j = 0; j < keypoint_ptr->points.size(); j++)
         {
@@ -506,22 +546,113 @@ main (int argc, char** argv) {
                 pow(scaled_keypoint_ptr->points.back().y - scaled_keypoint_ptr->points.front().y, 2.0) +
                 pow(scaled_keypoint_ptr->points.back().z - scaled_keypoint_ptr->points.front().z, 2.0));
 
+        double originalDisTravel = sqrt(pow(keypoint_ptr->points.back().x - keypoint_ptr->points.front().x, 2.0) +
+                                        pow(keypoint_ptr->points.back().y - keypoint_ptr->points.front().y, 2.0) +
+                                        pow(keypoint_ptr->points.back().z - keypoint_ptr->points.front().z, 2.0));
+
+        cout << "original distance tralvel : " << originalDisTravel << endl;
+        cout << "Actual scale : " << 43.0 / originalDisTravel << endl;
 
         cout << "Distance travelled = " << dTravelledDistScaled << endl;
         cout << "Distance travelled 2 : " << disTravel2 << endl;
+
+        cout << "Actual distance travelled : " << disTravel2/dScale * 43.0 / originalDisTravel << endl;
         cout << "Scaling done" << endl;
 
         scaled_cloud_ptr->width = (int) scaled_cloud_ptr->points.size();
         scaled_cloud_ptr->height = 1;
         scaled_keypoint_ptr->width = (int) scaled_keypoint_ptr->points.size();
         scaled_keypoint_ptr->height = 1;
+        scaled_cloud_upward_ptr->width = (int) scaled_cloud_upward_ptr->points.size();
+        scaled_cloud_upward_ptr->height = 1;
 
         cout << "Saving scaled point cloud files..." << endl;
-        writer.write("scaled_point_cloud.pcd", *scaled_cloud_ptr, false);
-        writer.write("scaled_keyframe.pcd", *scaled_keypoint_ptr, false);
+        writer.write("Downward_scaled_point_cloud.pcd", *scaled_cloud_ptr, false);
+        writer.write("Scaled_keyframe.pcd", *scaled_keypoint_ptr, false);
+        writer.write("Upward_scaled_poincloud.pcd", *scaled_cloud_upward_ptr, false);
+
+
+
+        //scale with real distance
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr real_scaled_cloud_ptr(new pcl::PointCloud<pcl::PointXYZRGB>);
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr real_scaled_keypoint_ptr(new pcl::PointCloud<pcl::PointXYZRGB>);
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr real_scaled_cloud_upward_ptr(new pcl::PointCloud<pcl::PointXYZRGB>);
+
+    double realScale = realDistance / sqrt( pow(keypoint_ptr->points.back().x - keypoint_ptr->points.front().x,2) +
+                                            pow(keypoint_ptr->points.back().y - keypoint_ptr->points.front().y,2) +
+                                            pow(keypoint_ptr->points.back().z - keypoint_ptr->points.front().z,2) ) ;
+
+    cout << "real scale : " << realScale << endl;
+     //Scaling downward points
+    for (size_t j = 0; j < cloud->points.size(); j++)
+    {
+        pcl::PointXYZRGB tpoint = cloud->points[j];
+        tpoint.x *= realScale;
+        tpoint.y *= realScale;
+        tpoint.z *= realScale;
+
+        //Convert color to float
+        /*
+        uint32_t temprgb = (uint32_t) tpoint.rgb;
+        float tfrgb = *reinterpret_cast<float *>(&temprgb);
+        tpoint.rgb = tfrgb;
+        scaled_cloud_ptr->points.push_back(tpoint);
+         */
+        real_scaled_cloud_ptr->points.push_back(tpoint);
+    }
+
+    //Scaling upward points
+    for (size_t j = 0; j < cloud_upward_ptr->points.size(); j++)
+    {
+        pcl::PointXYZRGB tpoint = cloud_upward_ptr->points[j];
+        tpoint.x *= realScale;
+        tpoint.y *= realScale;
+        tpoint.z *= realScale;
+
+        real_scaled_cloud_upward_ptr->points.push_back(tpoint);
+    }
+
+    // Calculate distance travelled in the map
+
+    //Scaling keyframe
+    for (size_t j = 0; j < keypoint_ptr->points.size(); j++)
+    {
+        pcl::PointXYZRGB tpoint = keypoint_ptr->points[j];
+        tpoint.x *= realScale;
+        tpoint.y *= realScale;
+        tpoint.z *= realScale;
+
+        //Convert color to float
+        /*
+        uint32_t temprgb = (uint32_t) tpoint.rgb;
+        float tfrgb = *reinterpret_cast<float *>(&temprgb);
+        tpoint.rgb = tfrgb;
+        scaled_keypoint_ptr->points.push_back(tpoint);
+        */
+        real_scaled_keypoint_ptr->points.push_back(tpoint);
+
+    }
+
+
+
+
+
+    real_scaled_cloud_ptr->width = (int) real_scaled_cloud_ptr->points.size();
+    real_scaled_cloud_ptr->height = 1;
+    real_scaled_keypoint_ptr->width = (int) real_scaled_keypoint_ptr->points.size();
+    real_scaled_keypoint_ptr->height = 1;
+    real_scaled_cloud_upward_ptr->width = (int) real_scaled_cloud_upward_ptr->points.size();
+    real_scaled_cloud_upward_ptr->height = 1;
+
+
+    writer.write("real_distance_Downward_scaled_point_cloud.pcd", *scaled_cloud_ptr, false);
+    writer.write("real_distance_Scaled_keyframe.pcd", *scaled_keypoint_ptr, false);
+    writer.write("real_distance_Upward_scaled_poincloud.pcd", *scaled_cloud_upward_ptr, false);
+
         cout << "Saved scaled point clouds" << endl;
 
         boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
+        cout << "Creating view port." << endl;
         if (simple) {
             viewer = simpleVis(basic_cloud_ptr);
         } else if (rgb) {
@@ -540,6 +671,7 @@ main (int argc, char** argv) {
         }
 
     viewer->addPlane(*coefficients,0,0,0,"plane");
+
         //--------------------
         // -----Main loop-----
         //--------------------
