@@ -634,7 +634,12 @@ main (int argc, char** argv) {
     }
 
 
+    double realKFtravelled = sqrt( pow(real_scaled_keypoint_ptr->points.back().x - real_scaled_keypoint_ptr->points.front().x, 2) +
+                                   pow(real_scaled_keypoint_ptr->points.back().y - real_scaled_keypoint_ptr->points.front().y, 2) +
+                                   pow(real_scaled_keypoint_ptr->points.back().z - real_scaled_keypoint_ptr->points.front().z, 2)
+                                   );
 
+    cout << "real KF travelled : " << realKFtravelled << endl;
 
 
     real_scaled_cloud_ptr->width = (int) real_scaled_cloud_ptr->points.size();
